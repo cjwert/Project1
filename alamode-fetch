@@ -1,3 +1,15 @@
 #!/bin/bash
 
+#Christian Wert
+#Project 1
+#File: alamode-fetch
 
+ssh -l cwert bb136-07
+
+
+users | wc -w #get count of users logged in
+
+ps h -A | wc -l #"h" strips header; -A prints all processes
+
+# Process state codes: D-uninterruptible sleep; R-running; S-interruptible sleep; T-stopped; W-paging;
+# 	X-dead; Z-zombie
