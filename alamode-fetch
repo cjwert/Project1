@@ -45,7 +45,6 @@ fi
 if [ "$haveFile" = true ]; then
 	while read line
 	do
-		echo $line
 		hostname=$line
 		ssh -n $hostname "hostname;
 		echo '=================='
