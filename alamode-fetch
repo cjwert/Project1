@@ -4,12 +4,40 @@
 #Project 1
 #File: alamode-fetch
 
-ssh -l cwert bb136-07
 
+while getopts ":n:f:d:" opt; do		#n:hostname   f:file   d:directory
+	case $opt in
+		n)
+			hostname=$OPTARG
+			haveHostname=true
+			;;
+		f)
+			file=$OPTARG
+			haveFile=true
+			;;
+		d)
+			directory=$OPTARG
+			;;
+	esac
+done
 
-users | wc -w #get count of users logged in
+if [ "$haveHostname" = true ] && [ "$haveFile" = true ]; then
+	echo "too many arguments provided ([-n hostname] and [-f filename] cannot both be given)"
+	exit 1
+fi
 
-ps h -A | wc -l #"h" strips header; -A prints all processes
+if [ "$haveHostname" != true ] && [ "$haveFile" != true ]; then
+	echo "too few arguments provided (either [-n hostname] or [-f filename] must be given)"
+	exit 2
+fi
+
+if [ "$haveDirectory" = true ]; then
+	echo "TODO"
+fi
+
+#ssh -l cwert bb136-07
+#users | wc -w #get count of users logged in
+#ps h -A | wc -l #"h" strips header; -A prints all processes
 
 # Process state codes: D-uninterruptible sleep; R-running; S-interruptible sleep; T-stopped; W-paging;
 # 	X-dead; Z-zombie
