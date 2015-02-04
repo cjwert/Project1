@@ -46,18 +46,18 @@ if [ "$haveFile" = true ]; then
 	while read line
 	do
 		hostname=$line
-		ssh -n $hostname "
+		ssh -n $hostname "hostname;
 		w -h | wc -l;
-		top -b -n 1 | grep Tasks; 
+		top -b -n 1 | grep Tasks | tr -s ',' \\\n | tr -d [:alpha:][:blank:]':';
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -1;
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -2 | tail -1;
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -3 | tail -1;
 		" > "$outputDir""${hostname}"
 	done < $file
 else
-	ssh $hostname "
+	ssh $hostname "hostname;
 	w -h | wc -l;
-	top -b -n 1 | grep Tasks; 
+	top -b -n 1 | grep Tasks | tr -s ',' \\\n | tr -d [:alpha:][:blank:]':';
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -1;
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -2 | tail -1;
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -3 | tail -1;
