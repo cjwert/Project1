@@ -16,9 +16,22 @@ while getopts ":s:d:" opt; do
 			htmlDirectory=$OPTARG	#specifies the directory where the website should be written
 			havehtmlDirectory=true
 			;;
+		\?)
+			echo "Error: Invalid argument"
+			exit;
 	esac
 done
 
+if [ "$haveSourceDirectory" == true ]; then
+	directory=$sourceDirectory
+fi
+
+if [ "$havehtmlDirectory" == true ]; then
+	if [ ! -d "$htmlDirectory" ]; then
+		mkdir "$htmlDirectory"
+	fi
+	outputDirectory=$htmlDirectory"/"
+fi
 
 #set up html
 htmlString="<!DOCTYPE html>	
@@ -29,24 +42,23 @@ htmlString="<!DOCTYPE html>
 table{border:1px solid black;border-collapse: collapse; width:75%;}
 th,td{border:1px solid black; text-align:center;}
 </style>
-<title>Alamode Lab Status</title>
+<title>Alamode Statistics</title>
 </head>
 <body>
 <table>
 <tr><th>Hostname</th><th>Users Logged In</th><th>Total Processes</th><th>Running Processes</th><th>Sleeping Processes</th><th>Stopped Processes</th><th>Zombie Processes</th><th>Load Avg Last min</th><th>Load Avg Last 5 min</th><th>Load Avg Last 15 min</th></tr>"
 
-#cd $directory	#change to directory retrieved from STDIN
 for f in $directory/*; do
 	array=()
-	while read line; do
-		array+=("$line")
+	while read line; do			#get all values from files
+		array+=("$line")		#add values to array
 	done < $f
 
-	if [ $(echo "${array[9]} < .1" | bc) -eq 1 ]; then
+	if [ $(echo "${array[9]} < .1" | bc) -eq 1 ]; then		#green if less than 10%
 		fifteen="green"
-	elif [ $(echo "${array[9]} > .7" | bc) -eq 1 ]; then
+	elif [ $(echo "${array[9]} > .7" | bc) -eq 1 ]; then	#red if greater than 70%
 		fifteen="red"
-	else
+	else													#yellow if in between
 		fifteen="yellow"
 	fi
 	htmlString=$htmlString"<tr style='background-color:$fifteen'><td>${array[0]}</td><td>${array[1]}</td><td>${array[2]}</td><td>${array[3]}</td><td>${array[4]}</td><td>${array[5]}</td><td>${array[6]}</td><td>${array[7]}</td><td>${array[8]}</td><td>${array[9]}</td></tr>"
@@ -54,4 +66,4 @@ done
 
 
 htmlString=$htmlString"</table></body></html>" #end html
-echo $htmlString > "boom.html"
+echo $htmlString > $outputDirectory"cwert.html"
