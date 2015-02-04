@@ -19,7 +19,21 @@ while getopts ":s:d:" opt; do
 	esac
 done
 
-htmlString="<!DOCTYPE html><html><head><title>Alamode Lab Status</title></head><body><table><tr><th>Hostname</th><th>Users Logged In</th><th>Total Processes</th><th>Running Processes</th><th>Sleeping Processes</th><th>Stopped Processes</th><th>Zombie Processes</th><th>Load Avg Last min</th><th>Load Avg Last 5 min</th><th>Load Avg Last 15 min</th></tr>" #set up html
+
+#set up html
+htmlString="<!DOCTYPE html>	
+<html>
+<head>
+<meta charset='UTF-8'> 
+<style>
+table{border:1px solid black;border-collapse: collapse; width:75%;}
+th,td{border:1px solid black; text-align:center;}
+</style>
+<title>Alamode Lab Status</title>
+</head>
+<body>
+<table>
+<tr><th>Hostname</th><th>Users Logged In</th><th>Total Processes</th><th>Running Processes</th><th>Sleeping Processes</th><th>Stopped Processes</th><th>Zombie Processes</th><th>Load Avg Last min</th><th>Load Avg Last 5 min</th><th>Load Avg Last 15 min</th></tr>"
 
 #cd $directory	#change to directory retrieved from STDIN
 for f in $directory/*; do
@@ -27,8 +41,15 @@ for f in $directory/*; do
 	while read line; do
 		array+=("$line")
 	done < $f
-	echo ${array[*]}
-	htmlString=$htmlString"<tr><td>${array[0]}</td><td>${array[1]}</td><td>${array[2]}</td><td>${array[3]}</td><td>${array[4]}</td><td>${array[5]}</td><td>${array[6]}</td><td>${array[7]}</td><td>${array[8]}</td><td>${array[9]}</td></tr>"
+
+	if [ $(echo "${array[9]} < .1" | bc) -eq 1 ]; then
+		fifteen="green"
+	elif [ $(echo "${array[9]} > .7" | bc) -eq 1 ]; then
+		fifteen="red"
+	else
+		fifteen="yellow"
+	fi
+	htmlString=$htmlString"<tr style='background-color:$fifteen'><td>${array[0]}</td><td>${array[1]}</td><td>${array[2]}</td><td>${array[3]}</td><td>${array[4]}</td><td>${array[5]}</td><td>${array[6]}</td><td>${array[7]}</td><td>${array[8]}</td><td>${array[9]}</td></tr>"
 done
 
 
