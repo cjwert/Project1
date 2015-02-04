@@ -4,3 +4,22 @@
 #Project 1
 #File: alamode-publish
 
+read directory	#get directory path from STDIN (echoed in alamode-fetch)
+
+while getopts ":s:d:" opt; do
+	case $opt in
+		s)
+			sourceDirectory=$OPTARG	 #specifies the directory to look in for the hostfiles containing the data saved by alamode-fetch
+			haveSourceDirectory=true
+			;;
+		d)
+			htmlDirectory=$OPTARG	#specifies the directory where the website should be written
+			havehtmlDirectory=true
+			;;
+	esac
+done
+
+#cd $directory	#change to directory retrieved from STDIN
+for f in $directory/*; do
+	echo "Processing $f"
+done

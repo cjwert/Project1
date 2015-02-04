@@ -38,41 +38,30 @@ if [ "$haveDirectory" = true ]; then
 	outputDir="$directory""/"
 else
 	TMPFILE=`mktemp -d`
+	directory=$TMPFILE
 	outputDir="$TMPFILE""/"
-	echo "$TMPFILE"
+	#echo "$TMPFILE"
 fi
-
 if [ "$haveFile" = true ]; then
 	while read line
 	do
 		hostname=$line
-		ssh -n $hostname "hostname;
-		echo '=================='
-		echo 'Users Currently Logged In:';
+		ssh -n $hostname "
 		w -h | wc -l;
-		echo 'Processes in each state:';
 		top -b -n 1 | grep Tasks; 
-		echo 'Average load last 1 minute:';
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -1;
-		echo 'Average load last 5 minutes:';
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -2 | tail -1;
-		echo 'Average load last 15 minutes:';
 		cat /proc/loadavg | tr -s [[:space:]] \\\n | head -3 | tail -1;
 		" > "$outputDir""${hostname}"
 	done < $file
 else
-	ssh $hostname "hostname;
-	echo '=================='
-	echo 'Users Currently Logged In:';
+	ssh $hostname "
 	w -h | wc -l;
-	echo 'Processes in each state:';
 	top -b -n 1 | grep Tasks; 
-	echo 'Average load last 1 minute:';
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -1;
-	echo 'Average load last 5 minutes:';
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -2 | tail -1;
-	echo 'Average load last 15 minutes:';
 	cat /proc/loadavg | tr -s [[:space:]] \\\n | head -3 | tail -1;
 	" > "$outputDir""${hostname}"
 fi
+echo $directory
 
