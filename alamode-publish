@@ -4,17 +4,26 @@
 #Project 1
 #File: alamode-publish
 
-read directory	#get directory path from STDIN (echoed in alamode-fetch)
+
+if [ "$#" != 0 ] && [ "$#" != 2 ] && [ "$#" != 4 ]; then
+	echo "Failure: Improper number of flags and/or arguments"
+	exit 5
+fi
+
+declare -i scount=0
+declare -i dcount=0
 
 while getopts ":s:d:" opt; do
 	case $opt in
 		s)
 			sourceDirectory=$OPTARG	 #specifies the directory to look in for the hostfiles containing the data saved by alamode-fetch
 			haveSourceDirectory=true
+			scount=$(($scount + 1))
 			;;
 		d)
 			htmlDirectory=$OPTARG	#specifies the directory where the website should be written
 			havehtmlDirectory=true
+			dcount=$(($dcount + 1))
 			;;
 		\?)
 			echo "Error: Invalid argument"
@@ -22,8 +31,20 @@ while getopts ":s:d:" opt; do
 	esac
 done
 
+if [ "$dcount" -gt 1 ] || [ "$scount" -gt 1 ]; then
+	echo "Failure: You cannot use the same flag more than once."
+	exit 3
+fi
+
 if [ "$haveSourceDirectory" == true ]; then
 	directory=$sourceDirectory
+else
+	if [ -t 0 ]; then			#checks if there is any input (should not be if not piped from alamode-fetch)
+   		echo "Please enter directory:"
+		read directory
+	else
+    	read directory			#get directory path from STDIN (echoed in alamode-fetch)
+	fi
 fi
 
 if [ "$havehtmlDirectory" == true ]; then
@@ -66,4 +87,11 @@ done
 
 
 htmlString=$htmlString"</table></body></html>" #end html
-echo $htmlString > $outputDirectory"cwert.html"
+#echo $htmlString > $outputDirectory"cwert.html"
+
+
+if [ "$havehtmlDirectory" == true ]; then
+	echo $htmlString > $outputDirectory"cwert.html"
+else
+	echo $htmlString			#print to STDOUT if no output directory was supplied
+fi

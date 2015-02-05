@@ -4,12 +4,13 @@ by: Christian Wert
 
 ----------------------------------------------------------------------------------------
 List of Files:
+
 alamode-fetch
 alamode-publish
 hosts.alamode
 readme.md
 
-All of these files are exactly what is stated in the assignment document.
+All of these files are exactly what is stated in the assignment document and what you would expect.
 ----------------------------------------------------------------------------------------
 
 File Format To Store Machine Information (all data is raw numbers with no text):
@@ -45,6 +46,7 @@ I made my HTML in my bash script and directly wrote it to an HTML file.
 ----------------------------------------------------------------------------------------
 Interesting Features
 
+For my color coding I made green <10%, yellow >10% and <70%, and red >70%
 ----------------------------------------------------------------------------------------
 Hours Spent on Project
 I spent roughly 8-10 hours on each part of the project.

@@ -4,30 +4,65 @@
 #Project 1
 #File: alamode-fetch
 
+declare -i fcount=0
+declare -i ncount=0
+declare -i dcount=0
+
+if [ "$#" != 2 ] && [ "$#" != 4 ]; then
+	echo "Failure: Improper number of flags and/or arguments"
+	exit 5
+fi
+
 while getopts ":n:f:d:" opt; do		#n:hostname   f:file   d:directory
 	case $opt in
 		n)
 			hostname=$OPTARG
 			haveHostname=true
+			ncount=$(($ncount + 1))
+			if [ -z "${hostname}" ]; then
+    			echo "Failure: Invalid arguments or flags."
+				exit 4
+			fi
 			;;
 		f)
 			file=$OPTARG
 			haveFile=true
+			fcount=$(($fcount + 1))
+			if [ -z "${file}" ]; then
+  			  	echo "Failure: Invalid arguments or flags."
+				exit 4
+			fi
 			;;
 		d)
 			directory=$OPTARG
 			haveDirectory=true
+			dcount=$(($dcount + 1))
+			if [ -z "${directory}" ]; then
+  			  	echo "Failure: Invalid arguments or flags."
+				exit 4
+			fi
 			;;
+		\?)
+			echo "Error: Invalid argument"
+			exit;;
+		*)
+			echo "Error"
+			exit;;
 	esac
 done
 
+if [ "$dcount" -gt 1 ] || [ "$fcount" -gt 1 ] || [ "$ncount" -gt 1 ]; then
+	echo "Failure: You cannot use the same flag more than once."
+	exit 3
+fi
+
 if [ "$haveHostname" = true ] && [ "$haveFile" = true ]; then
-	echo "too many arguments provided ([-n hostname] and [-f filename] cannot both be given)"
+	echo "Failure: too many arguments provided ([-n hostname] and [-f filename] cannot both be given)"
 	exit 1
 fi
 
 if [ "$haveHostname" != true ] && [ "$haveFile" != true ]; then
-	echo "too few arguments provided (either [-n hostname] or [-f filename] must be given)"
+	echo "Failure: too few arguments provided (either [-n hostname] or [-f filename] must be given)"
 	exit 2
 fi
 
